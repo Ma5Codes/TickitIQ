@@ -5,7 +5,7 @@ import { DURATIONS } from "@/convex/constants";
 import baseUrl from "@/lib/baseUrl";
 import { getConvexClient } from "@/lib/convex";
 import { stripe } from "@/lib/stripe";
-import { auth } from "@clerk/nextjs/server";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 export type StripeCheckoutMetaData = {
     eventId: Id<"events">;
@@ -14,8 +14,7 @@ export type StripeCheckoutMetaData = {
   };
 
 export  async function createStripeCheckoutSession({eventId}:{eventId: Id<"events">}){
-   const { userId } = await auth();
-  if (!userId) throw new Error("Not authenticated");
+   const { userId } = await getAuthenticatedUser();
 
   const convex = getConvexClient();
 

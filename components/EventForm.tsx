@@ -19,7 +19,7 @@ import {   z } from "zod"
 import { Textarea } from './ui/textarea';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import { useUser } from '@clerk/clerk-react';
+import { useUser } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import { useStorageUrl } from '@/lib/utils';
 import Image from 'next/image';

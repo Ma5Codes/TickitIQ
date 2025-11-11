@@ -3,7 +3,7 @@ import { api } from '@/convex/_generated/api';
 import { Doc } from '@/convex/_generated/dataModel';
 import { Metrics } from '@/convex/events';
 import { useStorageUrl } from '@/lib/utils';
-import { useUser } from '@clerk/clerk-react';
+import { useUser } from '@/hooks/useAuth';
 import { useQuery } from 'convex/react';
 import { Ban, Banknote, CalendarDays, Edit, InfoIcon, Ticket } from 'lucide-react';
 import Image from 'next/image';
