@@ -2,7 +2,7 @@
 
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@/hooks/useAuth";
 
 import { Ticket } from "lucide-react";
 import TicketCard from "@/components/TicketCard";
