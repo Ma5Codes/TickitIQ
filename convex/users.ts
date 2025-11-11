@@ -1,6 +1,6 @@
 
 
-import { mutation, query,  } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 export const getUsersStripeConnectId = query({
@@ -77,5 +77,73 @@ export const getUserById = query({
       .first();
 
     return user;
+  },
+});
+
+export const getUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    return user;
+  },
+});
+
+export const createUser = mutation({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    hashedPassword: v.string(),
+  },
+  handler: async (ctx, { email, name, hashedPassword }) => {
+    // Check if user already exists
+    const existingUser = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    if (existingUser) {
+      throw new Error("User with this email already exists");
+    }
+
+    // Generate a unique userId
+    const userId = crypto.randomUUID();
+
+    // Create new user
+    const newUserId = await ctx.db.insert("users", {
+      userId,
+      name,
+      email,
+      hashedPassword,
+      stripeConnectId: undefined,
+    });
+
+    return { userId, _id: newUserId };
+  },
+});
+
+export const authenticateUser = query({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, { email }) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+
+    if (!user) {
+      return null;
+    }
+
+    return {
+      userId: user.userId,
+      email: user.email,
+      name: user.name,
+      hashedPassword: user.hashedPassword,
+    };
   },
 });

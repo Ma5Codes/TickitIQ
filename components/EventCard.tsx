@@ -14,7 +14,7 @@ import {
   PencilIcon,
   StarIcon,
 } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { useUser } from "@/hooks/useAuth";
 import PurchaseTicket from "./PurchaseTicket";
 import { useRouter } from "next/navigation";
 import { useStorageUrl } from "@/lib/utils";

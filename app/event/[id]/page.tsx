@@ -8,7 +8,8 @@ import { CalendarDays, MapPin, Ticket, Users } from "lucide-react";
 import { useParams } from "next/navigation";
 import Spinner from "@/components/Spinner";
 import JoinQueue from "@/components/JoinQueue";
-import { SignInButton, useUser } from "@clerk/nextjs";
+import { useUser } from "@/hooks/useAuth";
+import Link from "next/link";
 import { useStorageUrl } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -122,11 +123,11 @@ export default function EventPage() {
                       userId={user.id}
                     />
                   ) : (
-                    <SignInButton>
+                    <Link href="/auth/signin">
                       <Button className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
                         Sign in to buy tickets
                       </Button>
-                    </SignInButton>
+                    </Link>
                   )}
                 </div>
               </div>
