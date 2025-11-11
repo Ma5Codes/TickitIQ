@@ -5,7 +5,7 @@ import { createStripeConnectLoginLink } from '@/actions/createStripeConnectLogin
 import { AccountStatus, getStripeConnectAccountStatus } from '@/actions/getStripeConnectAccountStatus';
 import Spinner from '@/components/Spinner';
 import { api } from '@/convex/_generated/api';
-import { useUser } from '@clerk/clerk-react';
+import { useUser } from '@/hooks/useAuth';
 import { useQuery } from 'convex/react';
 import { CalendarDays, Cog, Plus } from 'lucide-react';
 import Link from 'next/link';

@@ -1,12 +1,11 @@
-import { auth } from "@clerk/nextjs/server";
+import { requireAuth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import SellerEventList from "@/components/SellerEventList";
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
 
 export default async function SellerEventsPage() {
-  const { userId } = await auth();
-  if (!userId) redirect("/");
+  const { userId } = await requireAuth();
 
   return (
     <div className="min-h-screen bg-gray-50">

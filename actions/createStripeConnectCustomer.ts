@@ -1,7 +1,7 @@
 "use server";
 import { api } from "@/convex/_generated/api";
 import { stripe } from "@/lib/stripe";
-import { auth } from "@clerk/nextjs/server";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { ConvexHttpClient } from "convex/browser";
 
 
@@ -16,10 +16,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
   const convex =  new  ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL)
 
 export async function createStripeConnectCustomer() {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("Not authenticated");
-  }
+  const { userId } = await getAuthenticatedUser();
 
   // Check if user already has a connect account
   const existingStripeConnectId = await convex.query(
