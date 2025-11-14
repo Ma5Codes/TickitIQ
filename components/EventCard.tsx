@@ -23,19 +23,33 @@ import Image from "next/image";
 export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const { user } = useUser();
   const router = useRouter();
-  const event = useQuery(api.events.getById, { eventId });
-  const availability = useQuery(api.events.getEventAvailability, { eventId });
-  const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
-    eventId,
-    userId: user?.id ?? "",
-  });
-  const queuePosition = useQuery(api.waitingList.getQueuePosition, {
-    eventId,
-    userId: user?.id ?? "",
-  });
+  const fetchedEvent = useQuery(api.events.getById, eventId ? { eventId } : "skip");
+  const availability = useQuery(api.events.getEventAvailability, eventId ? { eventId } : "skip");
+  const userTicket = useQuery(api.tickets.getUserTicketForEvent, 
+    eventId ? {
+      eventId,
+      userId: user?.id ?? "",
+    } : "skip"
+  );
+  const queuePosition = useQuery(api.waitingList.getQueuePosition, 
+    eventId ? {
+      eventId,
+      userId: user?.id ?? "",
+    } : "skip"
+  );
+  
+  // Use passed event prop for sample data, otherwise use fetched event
+  const event = propEvent || fetchedEvent;
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
-  if (!event || !availability) {
+  // For sample data, create mock availability
+  const eventAvailability = availability || (propEvent ? { 
+    totalTickets: 100, 
+    purchasedCount: Math.floor(Math.random() * 50),
+    activeOffers: 0 
+  } : null);
+
+  if (!event) {
     return null;
   }
 
@@ -152,7 +166,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   return (
     <div
       onClick={() => router.push(`/event/${eventId}`)}
-      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer overflow-hidden relative ${
+      className={`bg-card rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/20 cursor-pointer overflow-hidden relative ${
         isPastEvent ? "opacity-75 hover:opacity-100" : ""
       }`}
     >
@@ -194,11 +208,11 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
             <span
               className={`px-4 py-1.5 font-semibold rounded-full ${
                 isPastEvent
-                  ? "bg-gray-50 text-gray-500"
-                  : "bg-green-50 text-green-700"
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-gradient-to-r from-accent to-amber-400 text-accent-foreground shadow-lg"
               }`}
             >
-              £{event.price.toFixed(2)}
+              ${event.price}
             </span>
             {availability.purchasedCount >= availability.totalTickets && (
               <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
