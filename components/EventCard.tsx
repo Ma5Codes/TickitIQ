@@ -20,22 +20,43 @@ import { useRouter } from "next/navigation";
 import { useStorageUrl } from "@/lib/utils";
 import Image from "next/image";
 
-export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
+export default function EventCard({ 
+  eventId, 
+  event: propEvent 
+}: { 
+  eventId?: Id<"events">;
+  event?: any; // For sample data
+}) {
   const { user } = useUser();
   const router = useRouter();
-  const event = useQuery(api.events.getById, { eventId });
-  const availability = useQuery(api.events.getEventAvailability, { eventId });
-  const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
-    eventId,
-    userId: user?.id ?? "",
-  });
-  const queuePosition = useQuery(api.waitingList.getQueuePosition, {
-    eventId,
-    userId: user?.id ?? "",
-  });
+  // Only fetch data if we have an eventId (real event, not sample data)
+  const fetchedEvent = useQuery(api.events.getById, eventId ? { eventId } : "skip");
+  const availability = useQuery(api.events.getEventAvailability, eventId ? { eventId } : "skip");
+  const userTicket = useQuery(api.tickets.getUserTicketForEvent, 
+    eventId && user?.id ? {
+      eventId,
+      userId: user.id,
+    } : "skip"
+  );
+  const queuePosition = useQuery(api.waitingList.getQueuePosition, 
+    eventId && user?.id ? {
+      eventId,
+      userId: user.id,
+    } : "skip"
+  );
+  
+  // Use passed event prop for sample data, otherwise use fetched event
+  const event = propEvent || fetchedEvent;
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
-  if (!event || !availability) {
+  // For sample data, create mock availability using the event's totalTickets
+  const eventAvailability = availability || (propEvent ? { 
+    totalTickets: propEvent.totalTickets || 100, 
+    purchasedCount: Math.floor((propEvent.totalTickets || 100) * 0.3), // 30% sold
+    activeOffers: 0 
+  } : null);
+
+  if (!event) {
     return null;
   }
 
@@ -46,7 +67,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const renderQueuePosition = () => {
     if (!queuePosition || queuePosition.status !== "waiting") return null;
 
-    if (availability.purchasedCount >= availability.totalTickets) {
+    if (eventAvailability.purchasedCount >= eventAvailability.totalTickets) {
       return (
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
           <div className="flex items-center">
@@ -151,8 +172,14 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
 
   return (
     <div
-      onClick={() => router.push(`/event/${eventId}`)}
-      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer overflow-hidden relative ${
+      onClick={() => {
+        if (eventId) {
+          router.push(`/event/${eventId}`)
+        } else {
+          alert("This is a sample event. Please sign up to view real events!")
+        }
+      }}
+      className={`bg-card rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/20 cursor-pointer overflow-hidden relative ${
         isPastEvent ? "opacity-75 hover:opacity-100" : ""
       }`}
     >
@@ -194,13 +221,13 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
             <span
               className={`px-4 py-1.5 font-semibold rounded-full ${
                 isPastEvent
-                  ? "bg-gray-50 text-gray-500"
-                  : "bg-green-50 text-green-700"
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-gradient-to-r from-accent to-amber-400 text-accent-foreground shadow-lg"
               }`}
             >
-              £{event.price.toFixed(2)}
+              ${event.price}
             </span>
-            {availability.purchasedCount >= availability.totalTickets && (
+            {eventAvailability.purchasedCount >= eventAvailability.totalTickets && (
               <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
                 Sold Out
               </span>
@@ -225,12 +252,12 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
           <div className="flex items-center text-gray-600">
             <Ticket className="w-4 h-4 mr-2" />
             <span>
-              {availability.totalTickets - availability.purchasedCount} /{" "}
-              {availability.totalTickets} available
-              {!isPastEvent && availability.activeOffers > 0 && (
+              {eventAvailability.totalTickets - eventAvailability.purchasedCount} /{" "}
+              {eventAvailability.totalTickets} available
+              {!isPastEvent && eventAvailability.activeOffers > 0 && (
                 <span className="text-amber-600 text-sm ml-2">
-                  ({availability.activeOffers}{" "}
-                  {availability.activeOffers === 1 ? "person" : "people"} trying
+                  ({eventAvailability.activeOffers}{" "}
+                  {eventAvailability.activeOffers === 1 ? "person" : "people"} trying
                   to buy)
                 </span>
               )}

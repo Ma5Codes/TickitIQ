@@ -12,7 +12,7 @@ function Header() {
   const { data: session, status } = useSession()
 
   return (
-    <div className='border-b'>
+    <div className='border-b border-border bg-card/50 backdrop-blur-sm'>
       <div className='flex flex-col lg:flex-row items-center gap-4 p-4'>
         <div className="flex items-center justify-between w-full lg:w-auto">
           <Link href="/" className="font-bold shrink-0">
@@ -58,7 +58,7 @@ function Header() {
           {session ? (
             <div className="flex items-center gap-3">
               <Link href="/seller">
-                <button className="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+                <button className="bg-gradient-to-r from-primary to-secondary text-white px-3 py-1.5 text-sm rounded-lg hover:from-violet-600 hover:to-cyan-500 transition-all duration-300 shadow-lg hover:shadow-xl">
                   Sell Tickets
                 </button>
               </Link>
@@ -88,7 +88,7 @@ function Header() {
                 </button>
               </Link>
               <Link href="/auth/signup">
-                <button className="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+                <button className="bg-gradient-to-r from-primary to-secondary text-white px-3 py-1.5 text-sm rounded-lg hover:from-violet-600 hover:to-cyan-500 transition-all duration-300 shadow-lg hover:shadow-xl">
                   Sign Up
                 </button>
               </Link>
@@ -101,7 +101,7 @@ function Header() {
           {session ? (
             <>
               <Link href="/seller" className="flex-1">
-                <button className="w-full bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+                <button className="w-full bg-gradient-to-r from-primary to-secondary text-white px-3 py-1.5 text-sm rounded-lg hover:from-violet-600 hover:to-cyan-500 transition-all duration-300 shadow-lg hover:shadow-xl">
                   Sell Tickets
                 </button>
               </Link>
@@ -114,7 +114,7 @@ function Header() {
             </>
           ) : (
             <Link href="/auth/signup" className="w-full">
-              <button className="w-full bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+              <button className="w-full bg-gradient-to-r from-primary to-secondary text-white px-3 py-1.5 text-sm rounded-lg hover:from-violet-600 hover:to-cyan-500 transition-all duration-300 shadow-lg hover:shadow-xl">
                 Sign Up
               </button>
             </Link>

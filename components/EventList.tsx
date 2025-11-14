@@ -5,6 +5,7 @@ import React from 'react'
 import Spinner from './Spinner';
 import { CalendarDays, Ticket } from 'lucide-react';
 import EventCard from './EventCard';
+import sampleData from '@/convex/sampleData.json';
 
 function EventList() {
     const events = useQuery(api.events.get)
@@ -17,11 +18,17 @@ function EventList() {
         );
       }
 
-      const upcomingEvents = events
+  // Use sample data if no real events exist to make homepage feel alive
+  const displayEvents = events.length === 0 ? sampleData : events;
+  
+  // Ensure displayEvents is an array before filtering
+  const eventsArray = Array.isArray(displayEvents) ? displayEvents : [];
+  
+  const upcomingEvents = eventsArray
     .filter((event) => event.eventDate > Date.now())
     .sort((a, b) => a.eventDate - b.eventDate);
 
-  const pastEvents = events
+  const pastEvents = eventsArray
     .filter((event) => event.eventDate <= Date.now())
     .sort((a, b) => b.eventDate - a.eventDate);
 
@@ -31,13 +38,13 @@ function EventList() {
         {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Upcoming Events</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Upcoming Events</h1>
+          <p className="mt-2 text-muted-foreground">
             Discover & book tickets for amazing events
           </p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-100">
-          <div className="flex items-center gap-2 text-gray-600">
+        <div className="bg-card px-4 py-2 rounded-lg shadow-sm border border-border">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <CalendarDays className="w-5 h-5" />
             <span className="font-medium">
               {upcomingEvents.length} Upcoming Events
@@ -49,26 +56,26 @@ function EventList() {
        {/* Upcoming Events Grid */}
        {upcomingEvents.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event._id} eventId={event._id} />
+          {upcomingEvents.map((event, index) => (
+            <EventCard key={event._id || `sample-upcoming-${index}`} eventId={event._id} event={event} />
           ))}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-lg p-12 text-center mb-12">
-          <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">
+        <div className="bg-muted/50 rounded-lg p-12 text-center mb-12">
+          <Ticket className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-card-foreground">
             No upcoming events
           </h3>
-          <p className="text-gray-600 mt-1">Check back later for new events</p>
+          <p className="text-muted-foreground mt-1">Check back later for new events</p>
         </div>
       )}
 
       {pastEvents.length > 0 && (
         <>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Past Events</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-6">Past Events</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastEvents.map((event) => (
-              <EventCard key={event._id} eventId={event._id} />
+            {pastEvents.map((event, index) => (
+              <EventCard key={event._id || `sample-past-${index}`} eventId={event._id} event={event} />
             ))}
           </div>
         </>
