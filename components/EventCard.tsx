@@ -23,18 +23,19 @@ import Image from "next/image";
 export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const { user } = useUser();
   const router = useRouter();
+  // Only fetch data if we have an eventId (real event, not sample data)
   const fetchedEvent = useQuery(api.events.getById, eventId ? { eventId } : "skip");
   const availability = useQuery(api.events.getEventAvailability, eventId ? { eventId } : "skip");
   const userTicket = useQuery(api.tickets.getUserTicketForEvent, 
-    eventId ? {
+    eventId && user?.id ? {
       eventId,
-      userId: user?.id ?? "",
+      userId: user.id,
     } : "skip"
   );
   const queuePosition = useQuery(api.waitingList.getQueuePosition, 
-    eventId ? {
+    eventId && user?.id ? {
       eventId,
-      userId: user?.id ?? "",
+      userId: user.id,
     } : "skip"
   );
   
@@ -42,10 +43,10 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const event = propEvent || fetchedEvent;
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
-  // For sample data, create mock availability
+  // For sample data, create mock availability using the event's totalTickets
   const eventAvailability = availability || (propEvent ? { 
-    totalTickets: 100, 
-    purchasedCount: Math.floor(Math.random() * 50),
+    totalTickets: propEvent.totalTickets || 100, 
+    purchasedCount: Math.floor((propEvent.totalTickets || 100) * 0.3), // 30% sold
     activeOffers: 0 
   } : null);
 
@@ -165,7 +166,13 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
 
   return (
     <div
-      onClick={() => router.push(`/event/${eventId}`)}
+      onClick={() => {
+        if (eventId) {
+          router.push(`/event/${eventId}`)
+        } else {
+          alert("This is a sample event. Please sign up to view real events!")
+        }
+      }}
       className={`bg-card rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-border hover:border-primary/20 cursor-pointer overflow-hidden relative ${
         isPastEvent ? "opacity-75 hover:opacity-100" : ""
       }`}
@@ -239,8 +246,8 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
           <div className="flex items-center text-gray-600">
             <Ticket className="w-4 h-4 mr-2" />
             <span>
-              {availability.totalTickets - availability.purchasedCount} /{" "}
-              {availability.totalTickets} available
+              {eventAvailability.totalTickets - eventAvailability.purchasedCount} /{" "}
+              {eventAvailability.totalTickets} available
               {!isPastEvent && availability.activeOffers > 0 && (
                 <span className="text-amber-600 text-sm ml-2">
                   ({availability.activeOffers}{" "}

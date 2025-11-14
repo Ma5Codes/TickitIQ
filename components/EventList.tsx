@@ -19,13 +19,16 @@ function EventList() {
       }
 
   // Use sample data if no real events exist to make homepage feel alive
-  const displayEvents = events.length === 0 ? sampleData.events : events;
+  const displayEvents = events.length === 0 ? sampleData : events;
   
-  const upcomingEvents = displayEvents
+  // Ensure displayEvents is an array before filtering
+  const eventsArray = Array.isArray(displayEvents) ? displayEvents : [];
+  
+  const upcomingEvents = eventsArray
     .filter((event) => event.eventDate > Date.now())
     .sort((a, b) => a.eventDate - b.eventDate);
 
-  const pastEvents = displayEvents
+  const pastEvents = eventsArray
     .filter((event) => event.eventDate <= Date.now())
     .sort((a, b) => b.eventDate - a.eventDate);
 
