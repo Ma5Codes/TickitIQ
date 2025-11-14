@@ -20,7 +20,13 @@ import { useRouter } from "next/navigation";
 import { useStorageUrl } from "@/lib/utils";
 import Image from "next/image";
 
-export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
+export default function EventCard({ 
+  eventId, 
+  event: propEvent 
+}: { 
+  eventId?: Id<"events">;
+  event?: any; // For sample data
+}) {
   const { user } = useUser();
   const router = useRouter();
   // Only fetch data if we have an eventId (real event, not sample data)
@@ -61,7 +67,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const renderQueuePosition = () => {
     if (!queuePosition || queuePosition.status !== "waiting") return null;
 
-    if (availability.purchasedCount >= availability.totalTickets) {
+    if (eventAvailability.purchasedCount >= eventAvailability.totalTickets) {
       return (
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
           <div className="flex items-center">
@@ -221,7 +227,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
             >
               ${event.price}
             </span>
-            {availability.purchasedCount >= availability.totalTickets && (
+            {eventAvailability.purchasedCount >= eventAvailability.totalTickets && (
               <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
                 Sold Out
               </span>
@@ -248,10 +254,10 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
             <span>
               {eventAvailability.totalTickets - eventAvailability.purchasedCount} /{" "}
               {eventAvailability.totalTickets} available
-              {!isPastEvent && availability.activeOffers > 0 && (
+              {!isPastEvent && eventAvailability.activeOffers > 0 && (
                 <span className="text-amber-600 text-sm ml-2">
-                  ({availability.activeOffers}{" "}
-                  {availability.activeOffers === 1 ? "person" : "people"} trying
+                  ({eventAvailability.activeOffers}{" "}
+                  {eventAvailability.activeOffers === 1 ? "person" : "people"} trying
                   to buy)
                 </span>
               )}
