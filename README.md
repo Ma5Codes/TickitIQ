@@ -1,52 +1,253 @@
-# Welcome to your Convex + Next.js + Clerk app
+# 🎟️ **TickitIQ — Real-Time Event Ticketing Platform**
 
-This is a [Convex](https://convex.dev/) project created with [`npm create convex`](https://www.npmjs.com/package/create-convex).
+TickitIQ is a modern, real-time event ticketing platform built with **Next.js 15**, **Convex**, **Clerk**, and **Stripe Connect**.
+It features a smart queue system, real-time updates, and secure, seamless payments for both buyers and event organizers.
 
-After the initial setup (<2 minutes) you'll have a working full-stack app using:
+---
 
-- Convex as your backend (database, server logic)
-- [React](https://react.dev/) as your frontend (web page interactivity)
-- [Next.js](https://nextjs.org/) for optimized web hosting and page routing
-- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
-- [Clerk](https://clerk.com/) for authentication
+## 🚀 **Features**
 
-## Get started
+### 🎫 **For Event Attendees**
 
-If you just cloned this codebase and didn't use `npm create convex`, run:
+* Real-time ticket availability tracking
+* Smart queueing system with live position updates
+* Time-limited ticket offers
+* Mobile-friendly ticket wallet
+* Secure payments via Stripe
+* Digital tickets with QR codes
+* Automatic refunds for cancelled events
 
+### 🧑‍💼 **For Event Organizers**
+
+* Direct payouts via Stripe Connect
+* Real-time sales monitoring
+* Automated queue management
+* Event analytics dashboard
+* Automatic ticket recycling
+* Customizable ticket limits
+* One-click event cancellation
+* Bulk refund processing
+
+### 🛠️ **Technical Features**
+
+* Real-time backend powered by Convex
+* Authentication with Clerk
+* Payment processing with Stripe Connect
+* SSR + CSR hybrid architecture
+* UI built with Tailwind CSS + shadcn/ui
+* Fully responsive
+* Rate limiting on ticket actions
+* Built-in fraud prevention
+* Toast notifications for feedback
+
+### 🎨 **UI / UX Features**
+
+* Instant feedback with toasts
+* Complete design system using shadcn/ui
+* Full accessibility
+* Page transitions and animations
+* Mobile-first responsive design
+* Smooth loading states
+* Micro-interactions for engagement
+
+---
+
+## 🧰 **Getting Started**
+
+### **Prerequisites**
+
+* Node.js 18+
+* npm or yarn
+* Stripe Account
+* Clerk Account
+* Convex Account
+
+---
+
+## 🔐 **Environment Variables**
+
+Create a file named **`.env.local`**:
+
+```bash
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_key
+CLERK_SECRET_KEY=your_clerk_secret
+STRIPE_SECRET_KEY=your_stripe_secret
+STRIPE_WEBHOOK_SECRET=your_webhook_secret
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+---
+
+## 📦 **Installation**
+
+```bash
+# Clone your repository
+git clone https://github.com/Ma5Codes/TickitIQ
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
+
+# Start Convex (in a separate terminal)
+npx convex dev
 ```
 
-If you're reading this README on GitHub and want to use this template, run:
+---
 
+## 🔑 **Setting up Clerk**
+
+1. Create a Clerk app
+2. Configure OAuth providers
+3. Add redirect URLs
+4. Add your Clerk keys to `.env.local`
+
+---
+
+## ⚡ **Setting up Convex**
+
+1. Create a Convex project
+
+2. Install Convex
+
+   ```bash
+   npm install convex
+   ```
+
+3. Initialize Convex
+
+   ```bash
+   npx convex init
+   ```
+
+4. Add your Convex deployment URL
+
+   ```bash
+   NEXT_PUBLIC_CONVEX_URL=your_convex_url
+   ```
+
+5. Start the Convex dev server
+
+   ```bash
+   npx convex dev
+   ```
+
+---
+
+## 💳 **Setting up Stripe**
+
+1. Create a Stripe account
+2. Enable Stripe Connect
+3. Add payout settings
+4. Configure webhook endpoint
+
+---
+
+## 🪝 **Stripe Webhooks (Local Development)**
+
+1. Install Stripe CLI
+
+2. Login:
+
+   ```bash
+   stripe login
+   ```
+
+3. Start forwarding webhooks:
+
+   ```bash
+   stripe listen --forward-to localhost:3000/api/webhooks/stripe
+   ```
+
+4. Add your webhook secret to `.env.local`:
+
+   ```bash
+   STRIPE_WEBHOOK_SECRET=whsec_xxxxx
+   ```
+
+Keep Stripe CLI running while testing payments.
+
+---
+
+## 🎨 **Setting up UI Components (shadcn/ui)**
+
+```bash
+npx shadcn-ui@latest init
+npx shadcn-ui@latest add toast
+npx shadcn-ui@latest add button
+npx shadcn-ui@latest add card
+npx shadcn-ui@latest add dialog
+npx shadcn-ui@latest add toaster
 ```
-npm create convex@latest -- -t nextjs-clerk
-```
 
-Then:
+---
 
-1. Open your app. There should be a "Claim your application" button from Clerk in the bottom right of your app.
-2. Follow the steps to claim your application and link it to this app.
-3. Follow step 3 in the [Convex Clerk onboarding guide](https://docs.convex.dev/auth/clerk#get-started) to create a Convex JWT template.
-4. Uncomment the Clerk provider in `convex/auth.config.ts`
-5. Paste the Issuer URL as `CLERK_JWT_ISSUER_DOMAIN` to your dev deployment environment variable settings on the Convex dashboard (see [docs](https://docs.convex.dev/auth/clerk#configuring-dev-and-prod-instances))
+## 🏛️ **Architecture**
 
-If you want to sync Clerk user data via webhooks, check out this [example repo](https://github.com/thomasballinger/convex-clerk-users-table/).
+### **Database Schema**
 
-## Learn more
+* Events
+* Tickets
+* Waiting List
+* Users
 
-To learn more about developing your project with Convex, check out:
+### **Core Systems**
 
-- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
-- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
-- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
+* Real-time queue engine
+* Rate-limiting
+* Automated offer expiration
+* Stripe payment + payout system
+* User session sync
 
-## Join the community
+---
 
-Join thousands of developers building full-stack apps with Convex:
+## 🎯 **Usage**
 
-- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
-- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
-# tikit-mplace
+### **Creating an Event**
+
+1. Sign up as an organizer
+2. Complete Stripe Connect onboarding
+3. Create an event
+4. Publish tickets
+
+### **Buying Tickets**
+
+1. Browse events
+2. Join queue
+3. Receive offer
+4. Complete purchase within timer
+5. Access digital ticket (QR code)
+
+---
+
+## 🔄 **Refunds & Cancellations**
+
+1. Organizers can cancel events
+2. System automatically issues refunds
+3. Users can track refund status
+
+---
+
+## ⭐ **User Experience**
+
+### Real-time Feedback:
+
+* Queue position
+* Ticket availability
+* Payment success/failure
+* Offer timers
+* Notifications
+
+### Visual Enhancements:
+
+* Animated cards & buttons
+* Skeleton loaders
+* Smooth transitions
+* Progress indicators
+
+---
+
+## ❤️ Built with passion for modern ticketing.
+
