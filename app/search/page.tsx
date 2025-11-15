@@ -5,9 +5,9 @@ import { api } from '@/convex/_generated/api';
 import { useQuery } from 'convex/react';
 import { Search } from 'lucide-react';
 import { useSearchParams } from 'next/navigation'
- import React from 'react'
+import React, { Suspense } from 'react'
  
- export default function SearchPage() {
+function SearchContent() {
   const searchParams = useSearchParams();
   const query=  searchParams.get("q") || "";
   const searchResults = useQuery(api.events.search, { searchTerm: query });
@@ -86,6 +86,14 @@ import { useSearchParams } from 'next/navigation'
         )}
       </div>
     </div>
+   )
+ }
+
+ export default function SearchPage() {
+   return (
+     <Suspense fallback={<div className="min-h-[400px] flex items-center justify-center"><Spinner /></div>}>
+       <SearchContent />
+     </Suspense>
    )
  }
  
