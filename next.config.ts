@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* existing config options */
   images: {
     remotePatterns: [
       {
@@ -22,6 +21,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // ✅ Ignore TypeScript errors during production builds
   },
+  experimental: {
+    appDir: true, // ✅ Enable App Router experimental features
+  },
+  output: "standalone", // ✅ Helps with dynamic pages / client-only hooks
 };
 
 export default nextConfig;
